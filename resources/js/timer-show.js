@@ -15,7 +15,14 @@
     let clockOffset = 0;
     function serverNow() { return Date.now() + clockOffset; }
     function updateClockOffset(serverTimeMs) {
-        if (serverTimeMs) clockOffset = serverTimeMs - Date.now();
+        if (!serverTimeMs) return;
+        const newOffset = serverTimeMs - Date.now();
+        // Only adjust backward if the jump is significant (>2s real drift).
+        // Small backward adjustments are network jitter and would make
+        // countdowns tick backward for a split second.
+        if (newOffset >= clockOffset || clockOffset - newOffset > 2000) {
+            clockOffset = newOffset;
+        }
     }
 
     // Compute initial end time from config

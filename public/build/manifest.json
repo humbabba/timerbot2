@@ -21,7 +21,7 @@
     "isEntry": true
   },
   "resources/js/timer-runner.js": {
-    "file": "assets/timer-runner-8hKxjrTU.js",
+    "file": "assets/timer-runner-BcDCMd-0.js",
     "name": "timer-runner",
     "src": "resources/js/timer-runner.js",
     "isEntry": true,
@@ -30,7 +30,7 @@
     ]
   },
   "resources/js/timer-show.js": {
-    "file": "assets/timer-show-Bqb4k2Ze.js",
+    "file": "assets/timer-show-24y-raSP.js",
     "name": "timer-show",
     "src": "resources/js/timer-show.js",
     "isEntry": true

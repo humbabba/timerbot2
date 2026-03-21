@@ -48,7 +48,14 @@ import { playSound } from './sounds';
     let clockOffset = 0;
     function serverNow() { return Date.now() + clockOffset; }
     function updateClockOffset(serverTimeMs) {
-        if (serverTimeMs) clockOffset = serverTimeMs - Date.now();
+        if (!serverTimeMs) return;
+        const newOffset = serverTimeMs - Date.now();
+        // Only adjust backward if the jump is significant (>2s real drift).
+        // Small backward adjustments are network jitter and would make
+        // countdowns tick backward for a split second.
+        if (newOffset >= clockOffset || clockOffset - newOffset > 2000) {
+            clockOffset = newOffset;
+        }
     }
 
     // ── Undo state ──
@@ -127,6 +134,10 @@ import { playSound } from './sounds';
     // ── Server state sync ──
     function applySettingsFromServer(data) {
         if (!data) return;
+
+        // Skip server settings briefly after a local change so stale
+        // heartbeat responses don't revert what the user just set.
+        if (Date.now() - settingsChangedAt < 2000) return;
 
         const newEndTime = data.end_time;
         const newCount = data.participant_count;
@@ -356,6 +367,8 @@ import { playSound } from './sounds';
 
         if (!persistToServer) return;
 
+        settingsChangedAt = Date.now();
+
         // Persist to server
         if (config.settings_url) {
             fetch(config.settings_url, {
@@ -384,6 +397,7 @@ import { playSound } from './sounds';
     // field is still focused.
     let endTimeEditing = false;
     let endTimeEditTimer = null;
+    let settingsChangedAt = 0;   // timestamp of last local settings change
 
     if (settingEndTimeEl) {
         settingEndTimeEl.addEventListener('input', () => {
