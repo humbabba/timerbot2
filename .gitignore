@@ -7,6 +7,7 @@
 .phpactor.json
 .phpunit.result.cache
 /.fleet
+/.htaccess
 /.idea
 /.nova
 /.phpunit.cache
@@ -16,6 +17,7 @@
 /error_log
 /node_modules
 #/public/build
+/public/error_log
 /public/hot
 /public/storage
 /storage/*.key
